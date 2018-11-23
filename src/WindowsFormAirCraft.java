@@ -4,10 +4,10 @@ public class WindowsFormAirCraft extends JFrame{
     private JFrame window;
     public WindowsFormAirCraft(){
         window = new JFrame("AirCraft");
-        window.setSize(900,500);
+        window.setSize(1200,1024);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
-        window.add(new AirCraftPanel());
+        window.add(new FormHangar());
         window.setResizable(false);
         window.setVisible(true);
     }
