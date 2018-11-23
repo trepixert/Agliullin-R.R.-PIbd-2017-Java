@@ -4,17 +4,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 public class AirCraftPanel extends JPanel {
     private JButton createButton = new JButton("Создать самолет");
+    private JButton createCoolButton = new JButton("Создать крутой самолет");
     private JButton toUp = new JButton("Вверх");
     private JButton toDown = new JButton("Вниз");
     private JButton toLeft = new JButton("Влево");
     private JButton toRight = new JButton("Вправо");
-    private ArmorAirCraft armorAirCraft;
+    private IArmorAirCraft armorAirCraft;
     public AirCraftPanel(){
         eHandler handler = new eHandler();
         setLayout(null);
         createButton.setBounds(10,10,150,20);
         add(createButton);
         createButton.addMouseListener(handler);
+        createCoolButton.setBounds(160,10,150,20);
+        add(createCoolButton);
+        createCoolButton.addMouseListener(handler);
         toUp.setBounds(700,400,90,20);
         add(toUp);
         toUp.addMouseListener(handler);
@@ -28,7 +32,7 @@ public class AirCraftPanel extends JPanel {
         add(toRight);
         toRight.addMouseListener(handler);
     }
-    public void addAirCraft(ArmorAirCraft armorAirCraft){
+    public void addAirCraft(IArmorAirCraft armorAirCraft){
         this.armorAirCraft = armorAirCraft;
     }
     public void paint(Graphics g){
@@ -40,8 +44,14 @@ public class AirCraftPanel extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             if(e.getSource()==createButton){
-                armorAirCraft = new ArmorAirCraft((int)(Math.random()*100)+1,(int)(Math.random()*5000)+1000, Color.GRAY,Color.BLACK);
-                armorAirCraft.SetPosition((int)(Math.random()*100)+1,(int)(Math.random()*100)+1, getWidth(),getHeight());
+                armorAirCraft = new BaseArmorAirCraft((int)(Math.random()*100)+1,(int)(Math.random()*5000)+1000, Color.GRAY);
+                armorAirCraft.SetPosition((int)(Math.random()*501)+100,(int)(Math.random()*201)+100, getWidth(),getHeight());
+                addAirCraft(armorAirCraft);
+                repaint();
+            }
+            if(e.getSource()==createCoolButton){
+                armorAirCraft = new AirCraft((int)(Math.random()*501)+100,(int)(Math.random()*5000)+1000, Color.GRAY,Color.RED,true,true,Color.BLACK);
+                armorAirCraft.SetPosition((int)(Math.random()*501)+100,(int)(Math.random()*201)+100, getWidth(),getHeight());
                 addAirCraft(armorAirCraft);
                 repaint();
             }

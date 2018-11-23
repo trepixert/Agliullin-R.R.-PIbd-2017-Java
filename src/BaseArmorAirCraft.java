@@ -1,29 +1,12 @@
 import java.awt.*;
 
-public class ArmorAirCraft {
-    private int _startPosX;
-    private int _startPosY;
-    private int _pictureWidth;
-    private int _pictureHeight;
-    private final int AirCraftWidth = 100;
-    private final int AirCraftHeight = 100;
-    private int MaxSpeed;
-    private float Weight;
-    private Color MainColor;
-    private Color DopColor;
-
-    public ArmorAirCraft(int MaxSpeed, float Weight, Color MainColor, Color DopColor) {
+public class BaseArmorAirCraft extends AbstractArmorAirCraft{
+    protected final int AirCraftWidth = 100;
+    protected final int AirCraftHeight = 100;
+    public BaseArmorAirCraft(int MaxSpeed, float Weight, Color MainColor) {
         this.MaxSpeed = MaxSpeed;
         this.Weight = Weight;
         this.MainColor = MainColor;
-        this.DopColor = DopColor;
-    }
-
-    public void SetPosition(int x, int y, int width, int height) {
-        _startPosX = x;
-        _startPosY = y;
-        _pictureWidth = width;
-        _pictureHeight = height;
     }
 
     public void moveAirCraft(Direction direction) {
@@ -48,6 +31,7 @@ public class ArmorAirCraft {
                 break;
         }
     }
+
     public void DrawAirCraft(Graphics g) {
         g.setColor(MainColor);
         g.drawOval(_startPosX+80,_startPosY+50,250,50);
