@@ -2,6 +2,7 @@ import javax.swing.*;
 
 public class WindowsFormAirCraft extends JFrame{
     private JFrame window;
+
     public WindowsFormAirCraft(){
         window = new JFrame("AirCraft");
         window.setSize(1200,1024);

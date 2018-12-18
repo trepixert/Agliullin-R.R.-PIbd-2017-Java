@@ -16,9 +16,9 @@ public class Hangar<T extends IArmorAirCraft> {
         this.pictureHeight = pictureHeight;
     }
 
-    public int addAirCraft(T airCraft) {
+    public int addAirCraft(T airCraft) throws HangarOverflowException {
         if (_places.size() == maxCount)
-            return -1;
+            throw new HangarOverflowException();
         for (int i = 0; i < maxCount; i++) {
             if (CheckFreePlace(i)) {
                 _places.put(i, airCraft);
@@ -29,13 +29,13 @@ public class Hangar<T extends IArmorAirCraft> {
         return -1;
     }
 
-    public T removeAirCraft(int index) {
+    public T removeAirCraft(int index) throws HangarNotFoundException {
         if (!CheckFreePlace(index)) {
             T AirCraft = _places.get(index);
             _places.remove(index);
             return AirCraft;
         }
-        return null;
+        throw new HangarNotFoundException(index);
     }
 
     private boolean CheckFreePlace(int index) {
@@ -58,14 +58,14 @@ public class Hangar<T extends IArmorAirCraft> {
         }
     }
 
-    public void setT(int index, T value) {
+    public void setT(int index, T value) throws HangarOccupiedPlaceException {
         if (CheckFreePlace(index)) {
             _places.put(index, value);
             _places.get(index).SetPosition(5 + index / 10 * _placeSizeWidth - 80, index % 5 * (_placeSizeHeight + 145) + 60, pictureWidth, pictureHeight);
-        }
+        }else throw new HangarOccupiedPlaceException(index);
     }
 
-    public T getT(int index){
+    public T getT(int index) throws HangarNotFoundException {
         if(_places.containsKey(index))  return _places.get(index);
         return null;
     }

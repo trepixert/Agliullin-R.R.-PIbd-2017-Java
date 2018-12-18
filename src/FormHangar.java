@@ -1,11 +1,14 @@
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class FormHangar extends JPanel {
     private IArmorAirCraft armorAirCraft;
@@ -23,9 +26,19 @@ public class FormHangar extends JPanel {
     private JMenuBar menu;
     private JMenuItem save;
     private JMenuItem load;
+    private Logger logger;
 
     public FormHangar(JFrame window){
         setLayout(null);
+        logger = Logger.getLogger(FormHangar.class.getName());
+        try {
+            FileHandler fh = new FileHandler("C://Temp//logger.log");
+            logger.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
         eHandler handler = new eHandler();
         menu = new JMenuBar();
         hangar = new MultiLevelHangar(countLevel,getWidth(),getHeight());
@@ -66,7 +79,7 @@ public class FormHangar extends JPanel {
     public JMenu createFileMenu(){
         eHandler handler = new eHandler();
         JMenu file = new JMenu("Файл");
-        save = new JMenuItem("Открыть");
+        save = new JMenuItem("Сохранить");
         load = new JMenuItem("Загрузить");
         file.add(save);
         file.addSeparator();
@@ -94,47 +107,66 @@ public class FormHangar extends JPanel {
             if(e.getSource()==setAirCraft){
                 formAirCraftConfig = new FormAirCraftConfig(new JFrame());
                 if(formAirCraftConfig.isSucces()){
-                    armorAirCraft = formAirCraftConfig.getAirCraft();
-                    int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
-                    if(place!=-1)
-                        repaint();
+                    try {
+                        armorAirCraft = formAirCraftConfig.getAirCraft();
+                        int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
+                        logger.info("Добавлен самолет "+armorAirCraft.toString()+" на место "+place);
+                        if (place != -1)
+                            repaint();
+                    }catch(HangarOverflowException ex){
+                        ex.printStackTrace();
+                    }
                 }
                 repaint();
             }
             if(e.getSource()== removeAirCraft){
-                if(!removeAirCraftField.getText().equals("")){
-                    if(listLevels.getSelectedIndex()>-1){
-                        Object airCraft = hangar.getHangar(listLevels.getSelectedIndex()).removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
-                        if(airCraft!=null){
-                            ((IArmorAirCraft) airCraft).SetPosition(40,40,removedAirCraft.getX(),removedAirCraft.getY());
-                            removedAirCraft.setAirCraft((IArmorAirCraft) airCraft);
-                            removedAirCraft.repaint();
-                        }else{
-                            removedAirCraft.setAirCraft(null);
-                            removedAirCraft.repaint();
+                    if (!removeAirCraftField.getText().equals("")) {
+                        if (listLevels.getSelectedIndex() > -1) {
+                            try{
+                                Object airCraft = hangar.getHangar(listLevels.getSelectedIndex()).removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
+                                ((IArmorAirCraft) airCraft).SetPosition(40, 40, removedAirCraft.getX(), removedAirCraft.getY());
+                                removedAirCraft.setAirCraft((IArmorAirCraft) airCraft);
+                                removedAirCraft.repaint();
+                                logger.info("Изъят самолет "+airCraft.toString()+" с места "+removeAirCraftField.getText());
+                            }
+                            catch(HangarNotFoundException ex){
+                                JOptionPane.showMessageDialog(null,"Не найдено!");
+                                removedAirCraft.setAirCraft(null);
+                                removedAirCraft.repaint();
+                            }
+                            catch(Exception ex){
+                                JOptionPane.showMessageDialog(null,"Неизвестная ошибка");
+                            }
+                            repaint();
                         }
-                        repaint();
                     }
-                }
             }
             if(e.getSource()==save){
                 JFileChooser fileChooser = new JFileChooser();
                 if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
-                    File file = fileChooser.getSelectedFile();
-                    if(hangar.saveData(file.getPath()))
-                        JOptionPane.showMessageDialog(null,"Сохранение прошло успешно!");
-                    else
-                        JOptionPane.showMessageDialog(null,"Не сохранилось");
+                    try {
+                        File file = fileChooser.getSelectedFile();
+                        hangar.saveData(file.getPath());
+                        JOptionPane.showMessageDialog(null, "Сохранение прошло успешно!");
+                        logger.info("Сохранено в файл "+file.getPath());
+                    }catch(Exception ex){
+                        JOptionPane.showMessageDialog(null, "Не сохранилось");
+                        ex.printStackTrace();
+                    }
                 }
             }
             if(e.getSource()==load){
                 JFileChooser fileChooser = new JFileChooser();
                 if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
-                    File file = fileChooser.getSelectedFile();
-                    if(hangar.loadData(file.getPath()))
-                        JOptionPane.showMessageDialog(null,"Загрузка прошла успешно!");
-                    else
-                        JOptionPane.showMessageDialog(null,"Не загрузилось");
+                    try {
+                        File file = fileChooser.getSelectedFile();
+                        hangar.loadData(file.getPath());
+                        JOptionPane.showMessageDialog(null, "Загрузка прошла успешно!");
+                        logger.info("Загружено из файла "+ file.getPath());
+                    }catch(Exception ex){
+                        JOptionPane.showMessageDialog(null, "Не загрузилось");
+                        ex.printStackTrace();
+                    }
                 }
             }
             repaint();

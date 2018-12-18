@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class MultiLevelHangar {
         return null;
     }
 
-    public boolean saveData(String path){
+    public void saveData(String path) throws HangarNotFoundException{
         File file = new File(path);
         if(file.exists())
             file.delete();
@@ -35,25 +36,24 @@ public class MultiLevelHangar {
                 writeToFile("Level"+System.lineSeparator(),fw);
                 for(int i=0;i<countPlaces;i++){
                     var airCraft = level.getT(i);
-                    if(airCraft!=null){
-                        if(airCraft.getClass().getTypeName().equals("BaseArmorAirCraft"))
-                            writeToFile(i+":BaseArmorAirCraft:",fw);
-                        if(airCraft.getClass().getTypeName().equals("AirCraft"))
-                            writeToFile(i+":AirCraft:",fw);
-                        writeToFile(airCraft+System.lineSeparator(),fw);
+                    if(airCraft!=null) {
+                        if (airCraft.getClass().getTypeName().equals("BaseArmorAirCraft"))
+                            writeToFile(i + ":BaseArmorAirCraft:", fw);
+                        if (airCraft.getClass().getTypeName().equals("AirCraft"))
+                            writeToFile(i + ":AirCraft:", fw);
+                        writeToFile(airCraft + System.lineSeparator(), fw);
                     }
                 }
             }
         }catch(IOException e){
             e.printStackTrace();
         }
-        return true;
     }
 
-    public boolean loadData(String path){
+    public void loadData(String path) throws Exception {
         File file = new File(path);
         String textFromFile = "";
-        if(!file.exists())  return false;
+        if(!file.exists())  throw new FileNotFoundException();
         try(Scanner scanner = new Scanner(file)){
             while (scanner.hasNextLine())
                 textFromFile += scanner.nextLine()+"\n";
@@ -65,7 +65,7 @@ public class MultiLevelHangar {
             int count = Integer.parseInt(strs[0].split(":")[1]);
             if(hangarStages!=null) hangarStages.clear();
             hangarStages = new ArrayList<>(count);
-        }else return false;
+        }else throw new Exception("Неверный формат файла");
         int counter = -1;
         IArmorAirCraft airCraft = null;
         for(int i=1;i<strs.length;i++){
@@ -81,7 +81,6 @@ public class MultiLevelHangar {
                 airCraft = new AirCraft(strs[i].split(":")[2]);
             hangarStages.get(counter).setT(Integer.parseInt(strs[i].split(":")[0]),airCraft);
         }
-        return true;
     }
 
     private void writeToFile(String text, FileWriter fw)throws IOException{
