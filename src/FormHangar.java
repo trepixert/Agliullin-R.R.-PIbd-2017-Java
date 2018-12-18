@@ -66,7 +66,7 @@ public class FormHangar extends JPanel {
     public JMenu createFileMenu(){
         eHandler handler = new eHandler();
         JMenu file = new JMenu("Файл");
-        save = new JMenuItem("Открыть");
+        save = new JMenuItem("Сохранить");
         load = new JMenuItem("Загрузить");
         file.add(save);
         file.addSeparator();
