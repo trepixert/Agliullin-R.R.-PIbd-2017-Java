@@ -8,8 +8,7 @@ import java.awt.event.ActionListener;
 public class FormHangar extends JPanel {
     private IArmorAirCraft armorAirCraft;
     private Board removedAirCraft = new Board();
-    private JButton setToHangarBaseAirCraft = new JButton("Припарковать обычный");
-    private JButton setToHangarCoolAirCraft = new JButton("Припарковать крутой ");
+    private JButton setAirCraft = new JButton("Добавить самолет");
     private JLabel removeAirCraftLabel = new JLabel();
     private JTextField removeAirCraftField = new JTextField();
     private JButton removeAirCraft = new JButton("Забрать самолет");
@@ -18,6 +17,7 @@ public class FormHangar extends JPanel {
     private JLabel levelLabel;
     MultiLevelHangar hangar;
     private final int countLevel = 5;
+    private FormAirCraftConfig formAirCraftConfig;
 
     public FormHangar(){
         setLayout(null);
@@ -37,12 +37,9 @@ public class FormHangar extends JPanel {
                 repaint();
             }
         });
-        setToHangarBaseAirCraft.setBounds(800,15,200,20);
-        add(setToHangarBaseAirCraft);
-        setToHangarBaseAirCraft.addActionListener(handler);
-        setToHangarCoolAirCraft.setBounds(800,40,200,20);
-        add(setToHangarCoolAirCraft);
-        setToHangarCoolAirCraft.addActionListener(handler);
+        setAirCraft.setBounds(800,10,200,20);
+        add(setAirCraft);
+        setAirCraft.addActionListener(handler);
         removeAirCraftLabel.setText("Забрать машину: ");
         removeAirCraftLabel.setBounds(800,170,200,20);
         add(removeAirCraftLabel);
@@ -68,27 +65,18 @@ public class FormHangar extends JPanel {
         listLevels = levels;
     }
 
-    class eHandler implements ActionListener {
+    private class eHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource()==setToHangarBaseAirCraft){
-                if(listLevels.getSelectedIndex()>-1){
-                    Color mainColor = JColorChooser.showDialog(null,"Choose a color",Color.RED);
-                    armorAirCraft = new BaseArmorAirCraft(100,1000,mainColor);
+            if(e.getSource()==setAirCraft){
+                formAirCraftConfig = new FormAirCraftConfig(new JFrame());
+                if(formAirCraftConfig.isSucces()){
+                    armorAirCraft = formAirCraftConfig.getAirCraft();
                     int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
-                    if(place != -1)
+                    if(place!=-1)
                         repaint();
                 }
-            }
-            if(e.getSource()==setToHangarCoolAirCraft){
-                if(listLevels.getSelectedIndex()>-1){
-                    Color mainColor = JColorChooser.showDialog(null,"Choose a color",Color.RED);
-                    Color dopColor = JColorChooser.showDialog(null,"Choose a color", Color.RED);
-                    armorAirCraft = new AirCraft(100,1000,mainColor,dopColor,true,true,Color.BLACK);
-                    int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
-                    if(place != -1 )
-                        repaint();
-                }
+                repaint();
             }
             if(e.getSource()== removeAirCraft){
                 if(!removeAirCraftField.getText().equals("")){

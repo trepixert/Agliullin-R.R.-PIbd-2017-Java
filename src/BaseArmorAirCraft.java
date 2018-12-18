@@ -41,4 +41,8 @@ public class BaseArmorAirCraft extends AbstractArmorAirCraft{
         g.fillOval(_startPosX+220,_startPosY-35,80,220);
         g.fillOval(_startPosX+110,_startPosY+10,30,120);
     }
+
+    public void setMainColor(Color color){
+        this.MainColor = color;
+    }
 }
