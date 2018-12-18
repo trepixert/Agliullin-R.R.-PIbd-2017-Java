@@ -78,7 +78,6 @@ public class AirCraft extends BaseArmorAirCraft {
                 break;
         }
     }
-
     public void setDopColor(Color color){
         this.DopColor = color;
     }

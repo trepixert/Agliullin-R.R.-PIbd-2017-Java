@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MultiLevelHangar {
+
     ArrayList<Hangar<IArmorAirCraft>> hangarStages;
     private final int countPlaces = 20;
     private int pictureWidth;

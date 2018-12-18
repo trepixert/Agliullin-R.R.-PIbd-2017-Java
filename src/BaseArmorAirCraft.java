@@ -55,7 +55,6 @@ public class BaseArmorAirCraft extends AbstractArmorAirCraft{
     public void setMainColor(Color color){
         this.MainColor = color;
     }
-
     @Override
     public String toString() {
         return MaxSpeed+";"+Weight+";"+MainColor.getRGB();
