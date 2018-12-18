@@ -19,7 +19,6 @@ public class FormHangar extends JPanel {
     private JButton removeAirCraft = new JButton("Забрать самолет");
     private JList listLevels;
     private DefaultListModel model;
-    private JLabel levelLabel;
     MultiLevelHangar hangar;
     private final int countLevel = 5;
     private FormAirCraftConfig formAirCraftConfig;
