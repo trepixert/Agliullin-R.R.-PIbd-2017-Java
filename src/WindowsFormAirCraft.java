@@ -11,6 +11,7 @@ public class WindowsFormAirCraft extends JFrame{
         window.setResizable(false);
         window.setVisible(true);
     }
+
     public static void main(String[] args) {
         new WindowsFormAirCraft();
     }
