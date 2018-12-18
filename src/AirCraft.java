@@ -3,15 +3,29 @@ import java.awt.*;
 public class AirCraft extends BaseArmorAirCraft {
     private Color DopColor;
     private Color GunColor;
-    public boolean modernizide;
+    public boolean modernized;
     public boolean guns;
+    private int _countLines;
 
-    public AirCraft(int maxSpeed, float weight, Color mainColor, Color dopColor, boolean modernizide, boolean guns, Color gunColor){
+    public AirCraft(int maxSpeed, float weight, Color mainColor, Color dopColor, boolean modernized, boolean guns, Color gunColor){
         super(maxSpeed,weight,mainColor);
         DopColor = dopColor;
         GunColor = gunColor;
-        this.modernizide = modernizide;
+        this.modernized = modernized;
         this.guns = guns;
+    }
+
+    public AirCraft(String info){
+        super(info);
+        String[] strs = info.split(";");
+        MaxSpeed = Integer.parseInt(strs[0]);
+        Weight = Float.parseFloat(strs[1]);
+        MainColor = new Color(Integer.parseInt(strs[2]));
+        DopColor = new Color(Integer.parseInt(strs[3]));
+        modernized = Boolean.parseBoolean(strs[4]);
+        guns = Boolean.parseBoolean(strs[5]);
+        GunColor = new Color(Integer.parseInt(strs[6]));
+        _countLines = Integer.parseInt(strs[7]);
     }
 
     @Override
@@ -29,7 +43,7 @@ public class AirCraft extends BaseArmorAirCraft {
             g.fillOval( _startPosX + 220 + 30, _startPosY + 130, 70, 25);
 
         }
-        if (modernizide) {
+        if (modernized) {
             g.setColor(DopColor);
             g.drawOval( _startPosX + 75, _startPosY + 45, 260, 60);
             g.drawOval( _startPosX + 215, _startPosY - 35, 90, 220);
@@ -64,7 +78,21 @@ public class AirCraft extends BaseArmorAirCraft {
                 break;
         }
     }
+
     public void setDopColor(Color color){
         this.DopColor = color;
+    }
+
+    public void set_countLines(int value) {
+        if(value > 0 && value < 4) _countLines=value;
+    }
+
+    public int get_countLines() {
+        return _countLines;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+";"+DopColor.getRGB()+";"+modernized+";"+guns+";"+GunColor.getRGB()+";"+_countLines;
     }
 }

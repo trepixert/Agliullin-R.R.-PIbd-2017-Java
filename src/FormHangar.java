@@ -1,9 +1,11 @@
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class FormHangar extends JPanel {
     private IArmorAirCraft armorAirCraft;
@@ -18,10 +20,14 @@ public class FormHangar extends JPanel {
     MultiLevelHangar hangar;
     private final int countLevel = 5;
     private FormAirCraftConfig formAirCraftConfig;
+    private JMenuBar menu;
+    private JMenuItem save;
+    private JMenuItem load;
 
-    public FormHangar(){
+    public FormHangar(JFrame window){
         setLayout(null);
         eHandler handler = new eHandler();
+        menu = new JMenuBar();
         hangar = new MultiLevelHangar(countLevel,getWidth(),getHeight());
         listLevels = new JList();
         model = new DefaultListModel();
@@ -37,7 +43,7 @@ public class FormHangar extends JPanel {
                 repaint();
             }
         });
-        setAirCraft.setBounds(800,10,200,20);
+        setAirCraft.setBounds(800,30,200,20);
         add(setAirCraft);
         setAirCraft.addActionListener(handler);
         removeAirCraftLabel.setText("Забрать машину: ");
@@ -51,6 +57,23 @@ public class FormHangar extends JPanel {
         removedAirCraft.setLocation(710,280);
         removedAirCraft.setSize(400,400);
         add(removedAirCraft);
+        menu.add(createFileMenu());
+        window.setJMenuBar(menu);
+        menu.setBounds(5,0,1200,20);
+        menu.setVisible(true);
+    }
+
+    public JMenu createFileMenu(){
+        eHandler handler = new eHandler();
+        JMenu file = new JMenu("Файл");
+        save = new JMenuItem("Открыть");
+        load = new JMenuItem("Загрузить");
+        file.add(save);
+        file.addSeparator();
+        file.add(load);
+        save.addActionListener(handler);
+        load.addActionListener(handler);
+        return file;
     }
 
     @Override
@@ -94,6 +117,27 @@ public class FormHangar extends JPanel {
                     }
                 }
             }
+            if(e.getSource()==save){
+                JFileChooser fileChooser = new JFileChooser();
+                if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
+                    File file = fileChooser.getSelectedFile();
+                    if(hangar.saveData(file.getPath()))
+                        JOptionPane.showMessageDialog(null,"Сохранение прошло успешно!");
+                    else
+                        JOptionPane.showMessageDialog(null,"Не сохранилось");
+                }
+            }
+            if(e.getSource()==load){
+                JFileChooser fileChooser = new JFileChooser();
+                if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+                    File file = fileChooser.getSelectedFile();
+                    if(hangar.loadData(file.getPath()))
+                        JOptionPane.showMessageDialog(null,"Загрузка прошла успешно!");
+                    else
+                        JOptionPane.showMessageDialog(null,"Не загрузилось");
+                }
+            }
+            repaint();
         }
     }
 }

@@ -3,10 +3,20 @@ import java.awt.*;
 public class BaseArmorAirCraft extends AbstractArmorAirCraft{
     protected final int AirCraftWidth = 100;
     protected final int AirCraftHeight = 100;
+
     public BaseArmorAirCraft(int MaxSpeed, float Weight, Color MainColor) {
         this.MaxSpeed = MaxSpeed;
         this.Weight = Weight;
         this.MainColor = MainColor;
+    }
+
+    public BaseArmorAirCraft(String info){
+        String[] strs = info.split(";");
+        if(strs.length==3){
+            MaxSpeed = Integer.parseInt(strs[0]);
+            Weight = Float.parseFloat(strs[1]);
+            MainColor = new Color(Integer.parseInt(strs[2]));
+        }
     }
 
     public void moveAirCraft(Direction direction) {
@@ -44,5 +54,10 @@ public class BaseArmorAirCraft extends AbstractArmorAirCraft{
 
     public void setMainColor(Color color){
         this.MainColor = color;
+    }
+
+    @Override
+    public String toString() {
+        return MaxSpeed+";"+Weight+";"+MainColor.getRGB();
     }
 }
