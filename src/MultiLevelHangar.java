@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class MultiLevelHangar {
+
     ArrayList<Hangar<IArmorAirCraft>> hangarStages;
     private final int countPlaces = 20;
 
