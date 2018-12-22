@@ -1,6 +1,9 @@
-import java.awt.*;
+import com.sun.source.doctree.SerialDataTree;
 
-public class AirCraft extends BaseArmorAirCraft {
+import java.awt.*;
+import java.io.Serializable;
+
+public class AirCraft extends BaseArmorAirCraft implements Serializable {
     private Color DopColor;
     private Color GunColor;
     public boolean modernized;
@@ -83,16 +86,44 @@ public class AirCraft extends BaseArmorAirCraft {
         this.DopColor = color;
     }
 
-    public void set_countLines(int value) {
-        if(value > 0 && value < 4) _countLines=value;
-    }
-
-    public int get_countLines() {
-        return _countLines;
-    }
-
     @Override
     public String toString() {
         return super.toString()+";"+DopColor.getRGB()+";"+modernized+";"+guns+";"+GunColor.getRGB()+";"+_countLines;
+    }
+
+    public int compareTo(AirCraft another) {
+        if (another == null) return 1;
+        if (MaxSpeed != another.MaxSpeed) return Integer.compare(MaxSpeed,another.MaxSpeed);
+        if (Weight != another.Weight) return Float.compare(Weight,another.Weight);
+        if (MainColor != another.MainColor) return Integer.compare(MainColor.getRGB(),another.MainColor.getRGB());
+        if (DopColor != another.DopColor) return Integer.compare(DopColor.getRGB(),another.DopColor.getRGB());
+        if (modernized!= another.modernized) return Boolean.compare(modernized,another.modernized);
+        if (guns != another.guns) return Boolean.compare(guns,another.guns);
+        if (GunColor != another.GunColor) return Integer.compare(GunColor.getRGB(),another.GunColor.getRGB());
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object another) {
+        if (another == null) {
+            return false;
+        }
+        if (!(another instanceof AirCraft)) {
+            return false;
+        }
+        AirCraft airCraftObf = (AirCraft) another;
+        return equals(airCraftObf);
+    }
+
+    public boolean equals(AirCraft another) {
+        if (another == null) return false;
+        if (MaxSpeed != another.MaxSpeed) return false;
+        if (Weight != another.Weight) return false;
+        if (MainColor != another.MainColor) return false;
+        if (DopColor != another.DopColor) return false;
+        if (modernized!= another.modernized) return false;
+        if (guns != another.guns) return false;
+        if (GunColor != another.GunColor) return false;
+        return true;
     }
 }

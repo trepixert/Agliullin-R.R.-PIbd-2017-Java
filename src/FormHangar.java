@@ -14,6 +14,7 @@ public class FormHangar extends JPanel {
     private IArmorAirCraft armorAirCraft;
     private Board removedAirCraft = new Board();
     private JButton setAirCraft = new JButton("Добавить самолет");
+    private JButton sortButton = new JButton("Сортировать");
     private JLabel removeAirCraftLabel = new JLabel();
     private JTextField removeAirCraftField = new JTextField();
     private JButton removeAirCraft = new JButton("Забрать самолет");
@@ -69,6 +70,9 @@ public class FormHangar extends JPanel {
         removedAirCraft.setLocation(710,280);
         removedAirCraft.setSize(400,400);
         add(removedAirCraft);
+        sortButton.setBounds(1010,30,190,20);
+        add(sortButton);
+        sortButton.addActionListener(handler);
         menu.add(createFileMenu());
         window.setJMenuBar(menu);
         menu.setBounds(5,0,1200,20);
@@ -113,6 +117,10 @@ public class FormHangar extends JPanel {
                         if (place != -1)
                             repaint();
                     }catch(HangarOverflowException ex){
+                        JOptionPane.showMessageDialog(null,"На ангаре нет свободных мест!");
+                        ex.printStackTrace();
+                    }catch(HangarAlreadyHaveException ex){
+                        JOptionPane.showMessageDialog(null,"В ангаре уже есть такой самолет!");
                         ex.printStackTrace();
                     }
                 }
@@ -167,8 +175,12 @@ public class FormHangar extends JPanel {
                         ex.printStackTrace();
                     }
                 }
+                repaint();
             }
-            repaint();
+            if(e.getSource()==sortButton){
+                hangar.Sort();
+                repaint();
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class MultiLevelHangar {
 
     ArrayList<Hangar<IArmorAirCraft>> hangarStages;
-    private final int countPlaces = 20;
+    private final int countPlaces = 9;
     private int pictureWidth;
     private int pictureHeight;
 
@@ -89,5 +89,9 @@ public class MultiLevelHangar {
 
     private boolean isNullOrEmpty(String text){
         return text==null || text.trim().length()==0;
+    }
+
+    public void Sort(){
+        hangarStages.sort(null);
     }
 }
