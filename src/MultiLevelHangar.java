@@ -1,18 +1,20 @@
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 public class MultiLevelHangar {
-    ArrayList<Hangar<IArmorAirCraft>> hangarStages;
-    private final int countPlaces = 20;
+    private List<Hangar<ArmorAirCraft>> hangarStages;
+    private final int countPlaces = 9;
 
-    public MultiLevelHangar(int countStages, int pictureWidth, int pictureHeight){
+    public MultiLevelHangar(int countStages, int pictureWidth, int pictureHeight) {
         hangarStages = new ArrayList<>();
-        for(int i=0;i<countStages;++i)
-            hangarStages.add(new Hangar<IArmorAirCraft>(countPlaces,pictureWidth,pictureHeight));
+        IntStream.range(0, countStages).forEach(i -> hangarStages.add(new Hangar<>(countPlaces, pictureWidth, pictureHeight)));
     }
 
-    public Hangar<IArmorAirCraft> getHangar(int index){
-        if(index >-1 && index<hangarStages.size())
+    public Hangar<ArmorAirCraft> getHangar(int index) {
+        if (index > -1 && index < hangarStages.size()) {
             return hangarStages.get(index);
+        }
         return null;
     }
 }

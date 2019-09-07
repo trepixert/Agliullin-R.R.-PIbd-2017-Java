@@ -1,52 +1,46 @@
 import java.awt.*;
-import java.util.stream.IntStream;
 import java.util.HashMap;
 
 public class Hangar<T extends ArmorAirCraft> {
     private final int size;
-    private HashMap<Integer,T> places;
+    private HashMap<Integer, T> places;
     private int pictureWidth;
     private int pictureHeight;
     private int placeSizeWidth = 210;
     private int placeSizeHeight = 80;
 
-    public Hangar(int size, int pictureWidth, int pictureHeight){
-        maxCount = size;
+    public Hangar(int size, int pictureWidth, int pictureHeight) {
+        this.size = size;
         places = new HashMap<>();
         this.pictureWidth = pictureWidth;
         this.pictureHeight = pictureHeight;
-        this.size = size;
     }
 
-    public int addAirCraft (T airCraft){
-        if(places.size()==this.size)
-            return -1;
-        for(int i=0;i<maxCount;i++){
-            if(checkFreePlace(i)){
+    public int addAirCraft(T airCraft) {
+        if (places.size() == this.size) {
+            return 0;
+        }
+        for (int i = 0; i < this.size; i++) {
+            if (!(places.containsKey(i))) {
                 places.put(i, airCraft);
-                places.get(i).setPosition(5 + i / 10 * _placeSizeWidth - 80, i % 5 * (_placeSizeHeight + 145) + 40, pictureWidth, pictureHeight);
+                places.get(i).setPosition(5 + i / 3 * (placeSizeWidth + 55) - 80, i % 3 * (placeSizeHeight + 145) + 57, pictureWidth, pictureHeight);
                 return i;
             }
         }
+        return -1;
     }
 
-    public T removeAirCraft (int index){
-        if (!checkFreePlace(index)) {
-            T airCraft = places.get(index);
+    public T removeAirCraft(int index) {
+        if (places.containsKey(index)) {
             places.remove(index);
-            return airCraft;
+            return places.get(index);
         }
         return null;
     }
 
-    private boolean CheckFreePlace(int index){
-        return !(_places.containsKey(index));
-    }
-
-    public void Draw(Graphics2D g){
-        DrawMarking(g);
-        for(T airCraft : _places.values())
-            airCraft.DrawAirCraft(g);
+    public void draw(Graphics2D g) {
+        drawMarking(g);
+        places.values().forEach(airCraft -> airCraft.drawAirCraft(g));
     }
 
     private void drawMarking(Graphics2D g) {
