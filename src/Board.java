@@ -2,14 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Board extends JPanel {
-    private IArmorAirCraft airCraft;
-    public void setAirCraft(IArmorAirCraft airCraft){
+    private ArmorAirCraft airCraft;
+
+    public void setAirCraft(ArmorAirCraft airCraft) {
         this.airCraft = airCraft;
     }
 
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         super.paint(g);
-        if(airCraft!=null)
-            airCraft.DrawAirCraft(g);
+        if (airCraft != null) {
+            airCraft.drawAirCraft(g);
+        }
     }
 }

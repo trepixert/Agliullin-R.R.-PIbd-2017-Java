@@ -1,26 +1,22 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.stream.IntStream;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class FormHangar extends JPanel {
-    private IArmorAirCraft armorAirCraft;
+    private ArmorAirCraft armorAirCraft;
     private Board removedAirCraft = new Board();
     private JButton setAirCraft = new JButton("Добавить самолет");
-    private JLabel removeAirCraftLabel = new JLabel();
+    private JLabel removeAirCraftLabel = new JLabel("Забрать самолёт: ");
     private JTextField removeAirCraftField = new JTextField();
     private JButton removeAirCraft = new JButton("Забрать самолет");
-    private JList listLevels;
-    private DefaultListModel model;
-    private JLabel levelLabel;
-    MultiLevelHangar hangar;
+    private JList<String> listLevels;
+    private DefaultListModel<String> model;
+    private MultiLevelHangar hangar;
     private final int countLevel = 5;
     private FormAirCraftConfig formAirCraftConfig;
     private JMenuBar menu;
@@ -28,8 +24,16 @@ public class FormHangar extends JPanel {
     private JMenuItem load;
     private Logger logger;
 
-    public FormHangar(JFrame window){
+    public FormHangar(JFrame window) {
         setLayout(null);
+        init(window);
+        eventsHandler();
+    }
+
+    private void init(JFrame window) {
+        hangar = new MultiLevelHangar(countLevel, getWidth(), getHeight());
+        listLevels = new JList<>();
+        model = new DefaultListModel<>();
         logger = Logger.getLogger(FormHangar.class.getName());
         try {
             FileHandler fh = new FileHandler("C://Temp//logger.log");
@@ -39,108 +43,78 @@ public class FormHangar extends JPanel {
         }catch(IOException e){
             e.printStackTrace();
         }
-        eHandler handler = new eHandler();
         menu = new JMenuBar();
-        hangar = new MultiLevelHangar(countLevel,getWidth(),getHeight());
-        listLevels = new JList();
-        model = new DefaultListModel();
-        for(int i=0;i<countLevel;i++)
-            model.addElement("Уровень: "+i);
+        IntStream.range(0, countLevel).forEach(i -> model.addElement("Уровень: " + i));
         listLevels.setModel(model);
         listLevels.setSelectedIndex(0);
-        listLevels.setBounds(800,70,200,100);
-        add(listLevels);
-        listLevels.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                repaint();
-            }
-        });
-        setAirCraft.setBounds(800,30,200,20);
+
+        setAirCraft.setBounds(800, 10, 200, 20);
+        removeAirCraftField.setBounds(800, 200, 200, 40);
+        removeAirCraftLabel.setBounds(800, 170, 200, 20);
+        removeAirCraft.setBounds(800, 250, 200, 20);
+        removedAirCraft.setBounds(710, 320, 300, 580);
+        listLevels.setBounds(800, 70, 200, 100);
+        menu.setBounds(5, 0, 1200, 20);
+
         add(setAirCraft);
-        setAirCraft.addActionListener(handler);
-        removeAirCraftLabel.setText("Забрать машину: ");
-        removeAirCraftLabel.setBounds(800,170,200,20);
-        add(removeAirCraftLabel);
-        removeAirCraftField.setBounds(800,200,200,40);
         add(removeAirCraftField);
-        removeAirCraft.setBounds(800,250,200,20);
+        add(removeAirCraftLabel);
         add(removeAirCraft);
-        removeAirCraft.addActionListener(handler);
-        removedAirCraft.setLocation(710,280);
-        removedAirCraft.setSize(400,400);
         add(removedAirCraft);
+        add(listLevels);
+
         menu.add(createFileMenu());
         window.setJMenuBar(menu);
-        menu.setBounds(5,0,1200,20);
         menu.setVisible(true);
     }
 
-    public JMenu createFileMenu(){
-        eHandler handler = new eHandler();
+    public JMenu createFileMenu() {
         JMenu file = new JMenu("Файл");
         save = new JMenuItem("Сохранить");
         load = new JMenuItem("Загрузить");
         file.add(save);
         file.addSeparator();
         file.add(load);
-        save.addActionListener(handler);
-        load.addActionListener(handler);
         return file;
     }
 
-    @Override
-    public void paint(Graphics g){
-        super.paint(g);
-        int selectedLevel = listLevels.getSelectedIndex();
-        if(selectedLevel!=-1)
-            if(hangar!=null) hangar.getHangar(selectedLevel).Draw((Graphics2D) g);
-    }
-
-    public void setListLevels(JList levels){
-        listLevels = levels;
-    }
-
-    private class eHandler implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if(e.getSource()==setAirCraft){
-                formAirCraftConfig = new FormAirCraftConfig(new JFrame());
-                if(formAirCraftConfig.isSucces()){
-                    try {
-                        armorAirCraft = formAirCraftConfig.getAirCraft();
-                        int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
-                        logger.info("Добавлен самолет "+armorAirCraft.toString()+" на место "+place);
-                        if (place != -1)
-                            repaint();
-                    }catch(HangarOverflowException ex){
-                        ex.printStackTrace();
+    private void eventsHandler() {
+        removeAirCraft.addActionListener(e -> {
+            if (!removeAirCraftField.getText().equals("")) {
+                if (listLevels.getSelectedIndex() > -1) {
+                    ArmorAirCraft airCraft = hangar.getHangar(listLevels.getSelectedIndex()).removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
+                    if (airCraft != null) {
+                        airCraft.setPosition(40, 40, removedAirCraft.getX(), removedAirCraft.getY());
+                        removedAirCraft.setAirCraft(airCraft);
+                        removedAirCraft.repaint();
+                    } else {
+                        removedAirCraft.setAirCraft(null);
+                        removedAirCraft.repaint();
                     }
+                    repaint();
                 }
+            }
+        });
+        setAirCraft.addActionListener(e -> {
+            formAirCraftConfig = new FormAirCraftConfig(new JFrame());
+            if (formAirCraftConfig.isSuccess()) {
+                armorAirCraft = formAirCraftConfig.getAirCraft();
+                int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
+                if (place != -1)
+                    repaint();
+            }
+            repaint();
+        });
+
+        listLevels.addListSelectionListener(e -> repaint());
+
+        save.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                JOptionPane.showMessageDialog(null,
+                        hangar.saveData(file.getPath()) ? "Сохранение прошло успешно!" : "Не сохранилось");
                 repaint();
-            }
-            if(e.getSource()== removeAirCraft){
-                    if (!removeAirCraftField.getText().equals("")) {
-                        if (listLevels.getSelectedIndex() > -1) {
-                            try{
-                                Object airCraft = hangar.getHangar(listLevels.getSelectedIndex()).removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
-                                ((IArmorAirCraft) airCraft).SetPosition(40, 40, removedAirCraft.getX(), removedAirCraft.getY());
-                                removedAirCraft.setAirCraft((IArmorAirCraft) airCraft);
-                                removedAirCraft.repaint();
-                                logger.info("Изъят самолет "+airCraft.toString()+" с места "+removeAirCraftField.getText());
-                            }
-                            catch(HangarNotFoundException ex){
-                                JOptionPane.showMessageDialog(null,"Не найдено!");
-                                removedAirCraft.setAirCraft(null);
-                                removedAirCraft.repaint();
-                            }
-                            catch(Exception ex){
-                                JOptionPane.showMessageDialog(null,"Неизвестная ошибка");
-                            }
-                            repaint();
-                        }
-                    }
-            }
             if(e.getSource()==save){
                 JFileChooser fileChooser = new JFileChooser();
                 if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
@@ -155,6 +129,17 @@ public class FormHangar extends JPanel {
                     }
                 }
             }
+        });
+
+        load.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                JOptionPane.showMessageDialog(null,
+                        hangar.loadData(file.getPath()) ? "Загрузка прошла успешно!" : "Не загрузилось");
+                repaint();
+            }
+        });
             if(e.getSource()==load){
                 JFileChooser fileChooser = new JFileChooser();
                 if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
@@ -172,4 +157,19 @@ public class FormHangar extends JPanel {
             repaint();
         }
     }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        int selectedLevel = listLevels.getSelectedIndex();
+        if (selectedLevel != -1 && hangar != null) {
+            hangar.getHangar(selectedLevel).draw((Graphics2D) g);
+        }
+    }
+
+    public void setListLevels(JList<String> levels) {
+        listLevels = levels;
+    }
+
 }
+
