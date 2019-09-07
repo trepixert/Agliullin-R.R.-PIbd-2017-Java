@@ -1,60 +1,60 @@
 import java.awt.*;
 
 public class ArmorAirCraft {
-    private int _startPosX;
-    private int _startPosY;
-    private int _pictureWidth;
-    private int _pictureHeight;
-    private final int AirCraftWidth = 100;
-    private final int AirCraftHeight = 100;
-    private int MaxSpeed;
-    private float Weight;
-    private Color MainColor;
-    private Color DopColor;
+    private int startPosX;
+    private int startPosY;
+    private int pictureWidth;
+    private int pictureHeight;
+    private final int airCraftWidth = 100;
+    private final int airCraftHeight = 100;
+    private int maxSpeed;
+    private float weight;
+    private Color mainColor;
+    private Color comColor;
 
-    public ArmorAirCraft(int MaxSpeed, float Weight, Color MainColor, Color DopColor) {
-        this.MaxSpeed = MaxSpeed;
-        this.Weight = Weight;
-        this.MainColor = MainColor;
-        this.DopColor = DopColor;
+    public ArmorAirCraft(int MaxSpeed, float Weight, Color MainColor, Color comColor) {
+        this.maxSpeed = MaxSpeed;
+        this.weight = Weight;
+        this.mainColor = MainColor;
+        this.comColor = comColor;
     }
 
-    public void SetPosition(int x, int y, int width, int height) {
-        _startPosX = x;
-        _startPosY = y;
-        _pictureWidth = width;
-        _pictureHeight = height;
+    public void setPosition(int x, int y, int width, int height) {
+        startPosX = x;
+        startPosY = y;
+        pictureWidth = width;
+        pictureHeight = height;
     }
 
     public void moveAirCraft(Direction direction) {
-        float step = MaxSpeed * 100 / Weight;
-        switch (direction)
-        {
+        float step = maxSpeed * 100 / weight;
+        switch (direction) {
             case Right:
-                if (_startPosX + step < _pictureWidth - AirCraftWidth)
-                    _startPosX += step;
+                if (startPosX + step < pictureWidth - airCraftWidth)
+                    startPosX += step;
                 break;
             case Left:
-                if (_startPosX - step > 0)
-                    _startPosX -= step;
+                if (startPosX - step > 0)
+                    startPosX -= step;
                 break;
             case Up:
-                if (_startPosY - step > 0)
-                    _startPosY -= step;
+                if (startPosY - step > 0)
+                    startPosY -= step;
                 break;
             case Down:
-                if (_startPosY + step < _pictureHeight - AirCraftHeight)
-                    _startPosY += step;
+                if (startPosY + step < pictureHeight - airCraftHeight)
+                    startPosY += step;
                 break;
         }
     }
-    public void DrawAirCraft(Graphics g) {
-        g.setColor(MainColor);
-        g.drawOval(_startPosX+80,_startPosY+50,250,50);
-        g.drawOval(_startPosX+220,_startPosY-35,80,220);
-        g.drawOval(_startPosX+110,_startPosY+10,30,120);
-        g.fillOval(_startPosX+80,_startPosY+50,250,50);
-        g.fillOval(_startPosX+220,_startPosY-35,80,220);
-        g.fillOval(_startPosX+110,_startPosY+10,30,120);
+
+    public void drawAirCraft(Graphics g) {
+        g.setColor(mainColor);
+        g.drawOval(startPosX + 80, startPosY + 50, 250, 50);
+        g.drawOval(startPosX + 220, startPosY - 35, 80, 220);
+        g.drawOval(startPosX + 110, startPosY + 10, 30, 120);
+        g.fillOval(startPosX + 80, startPosY + 50, 250, 50);
+        g.fillOval(startPosX + 220, startPosY - 35, 80, 220);
+        g.fillOval(startPosX + 110, startPosY + 10, 30, 120);
     }
 }
