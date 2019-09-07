@@ -13,7 +13,7 @@ public class AirCraftPanel extends JPanel {
         setLayout(null);
         createEvent();
         init();
-        directionsMovement();
+        initDrivingDirections();
     }
 
     private void createEvent() {
@@ -39,7 +39,7 @@ public class AirCraftPanel extends JPanel {
         add(toRight);
     }
 
-    private void directionsMovement() {
+    private void initDrivingDirections() {
         toUp.addActionListener(e -> {
             if (armorAirCraft != null) {
                 armorAirCraft.moveAirCraft(Direction.Up);
