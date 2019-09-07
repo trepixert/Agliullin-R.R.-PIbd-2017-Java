@@ -3,13 +3,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable<Hangar<T>>,Iterable<T>, Iterator<T> {
+public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable<Hangar<T>>, Iterable<T>, Iterator<T> {
     private final int size;
     private HashMap<Integer, T> places;
     private int pictureWidth;
     private int pictureHeight;
     private int placeSizeWidth = 210;
     private int placeSizeHeight = 80;
+    private int currentIndex;
 
     public Hangar(int size, int pictureWidth, int pictureHeight) {
         this.size = size;
@@ -18,7 +19,7 @@ public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable
         this.pictureHeight = pictureHeight;
     }
 
-    public int addAirCraft(T airCraft) throws HangarOverflowException {
+    public int addAirCraft(T airCraft) throws HangarOverflowException, HangarAlreadyHaveException {
         if (places.size() == this.size) {
             throw new HangarOverflowException();
         }
@@ -28,21 +29,22 @@ public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable
                 places.get(i).setPosition(5 + i / 3 * (placeSizeWidth + 55) - 80, i % 3 * (placeSizeHeight + 145) + 57, pictureWidth, pictureHeight);
                 return i;
             }
-        int index = _places.size();
-        for(int i=0;i<_places.size();i++){
-            if(CheckFreePlace(i))
+        }
+        int index = places.size();
+        for (int i = 0; i < places.size(); i++) {
+            if (!(places.containsKey(i)))
                 index = i;
-            if(_places.containsValue(airCraft))
+            if (places.containsValue(airCraft))
                 throw new HangarAlreadyHaveException();
         }
-        if(index != _places.size()){
-            _places.put(index,airCraft);
-            _places.get(index).SetPosition(5 + index / 3 * (_placeSizeWidth+55) - 80, index % 3 * (_placeSizeHeight + 145) + 57, pictureWidth, pictureHeight);
+        if (index != places.size()) {
+            places.put(index, airCraft);
+            places.get(index).setPosition(5 + index / 3 * (placeSizeWidth + 55) - 80, index % 3 * (placeSizeHeight + 145) + 57, pictureWidth, pictureHeight);
             return index;
         }
-        _places.put(index,airCraft);
-        _places.get(index).SetPosition(5 + index / 3 * (_placeSizeWidth+55) - 80, index % 3 * (_placeSizeHeight + 145) + 57, pictureWidth, pictureHeight);
-        return index-1;
+        places.put(index, airCraft);
+        places.get(index).setPosition(5 + index / 3 * (placeSizeWidth + 55) - 80, index % 3 * (placeSizeHeight + 145) + 57, pictureWidth, pictureHeight);
+        return index - 1;
     }
 
     public T removeAirCraft(int index) throws HangarNotFoundException {
@@ -81,30 +83,30 @@ public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable
 
     @Override
     public int compareTo(Hangar<T> other) {
-        if (this._places.size() > other._places.size()) {
+        if (this.places.size() > other.places.size()) {
             return -1;
-        } else if (this._places.size() < other._places.size()) {
+        } else if (this.places.size() < other.places.size()) {
             return 1;
         } else {
-            Integer[] thisKeys = this._places.keySet().toArray(new Integer[this._places.size()]);
-            Integer[] otherKeys = other._places.keySet().toArray(new Integer[other._places.size()]);
-            for (int i = 0; i < this._places.size(); i++) {
-                if (this._places.get(thisKeys[i]).getClass().equals(BaseArmorAirCraft.class)
-                        && other._places.get(otherKeys[i]).getClass().equals(AirCraft.class)) {
+            Integer[] thisKeys = this.places.keySet().toArray(new Integer[0]);
+            Integer[] otherKeys = other.places.keySet().toArray(new Integer[0]);
+            for (int i = 0; i < this.places.size(); i++) {
+                if (this.places.get(thisKeys[i]).getClass().equals(BaseArmorAirCraftImpl.class)
+                        && other.places.get(otherKeys[i]).getClass().equals(AirCraftImpl.class)) {
                     return 1;
                 }
-                if (this._places.get(thisKeys[i]).getClass().equals(AirCraft.class)
-                        && other._places.get(otherKeys[i]).getClass().equals(BaseArmorAirCraft.class)) {
+                if (this.places.get(thisKeys[i]).getClass().equals(AirCraftImpl.class)
+                        && other.places.get(otherKeys[i]).getClass().equals(BaseArmorAirCraftImpl.class)) {
                     return -1;
                 }
-                if (this._places.get(thisKeys[i]).getClass().equals(BaseArmorAirCraft.class)
-                        && other._places.get(otherKeys[i]).getClass().equals(BaseArmorAirCraft.class)) {
-                    return ((BaseArmorAirCraft) this._places.get(thisKeys[i])).compareTo((BaseArmorAirCraft) other._places.get(otherKeys[i]));
+                if (this.places.get(thisKeys[i]).getClass().equals(BaseArmorAirCraftImpl.class)
+                        && other.places.get(otherKeys[i]).getClass().equals(BaseArmorAirCraftImpl.class)) {
+                    return ((BaseArmorAirCraftImpl) this.places.get(thisKeys[i])).compareTo((BaseArmorAirCraftImpl) other.places.get(otherKeys[i]));
                 }
-                if (this._places.get(thisKeys[i]).getClass().equals(AirCraft.class)
-                        && other._places.get(otherKeys[i]).getClass().equals(AirCraft.class)) {
-                    return ((AirCraft) this._places.get(thisKeys[i]))
-                            .compareTo((AirCraft) other._places.get(otherKeys[i]));
+                if (this.places.get(thisKeys[i]).getClass().equals(AirCraftImpl.class)
+                        && other.places.get(otherKeys[i]).getClass().equals(AirCraftImpl.class)) {
+                    return ((AirCraftImpl) this.places.get(thisKeys[i]))
+                            .compareTo((AirCraftImpl) other.places.get(otherKeys[i]));
                 }
             }
         }
@@ -118,7 +120,7 @@ public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable
 
     @Override
     public boolean hasNext() {
-        if (currentIndex + 1 >= _places.size()) {
+        if (currentIndex + 1 >= places.size()) {
             currentIndex = -1;
             return false;
         }
@@ -128,7 +130,7 @@ public class Hangar<T extends ArmorAirCraft> implements Serializable, Comparable
 
     @Override
     public T next() {
-        return (T) _places.get(currentIndex);
+        return places.get(currentIndex);
     }
 
     private void reset() {

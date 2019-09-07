@@ -1,6 +1,7 @@
 import java.awt.*;
+import java.io.Serializable;
 
-public class AirCraftImpl extends BaseArmorAirCraftImpl {
+public class AirCraftImpl extends BaseArmorAirCraftImpl implements Serializable {
     private Color comColor;
     private Color gunColor;
     private boolean modernized;
@@ -15,7 +16,7 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
         this.guns = guns;
     }
 
-    public AirCraftImpl(String info){
+    public AirCraftImpl(String info) {
         super(info);
         String[] strings = info.split(";");
         this.maxSpeed = Integer.parseInt(strings[0]);
@@ -85,6 +86,42 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
 
     @Override
     public String toString() {
-        return super.toString()+";"+comColor.getRGB()+";"+modernized+";"+guns+";"+gunColor.getRGB()+";"+countLines;
+        return super.toString() + ";" + comColor.getRGB() + ";" + modernized + ";" + guns + ";" + gunColor.getRGB() + ";" + countLines;
+    }
+
+    public int compareTo(AirCraftImpl another) {
+        if (another == null) return 1;
+        if (maxSpeed != another.maxSpeed) return Integer.compare(maxSpeed,another.maxSpeed);
+        if (weight != another.weight) return Float.compare(weight,another.weight);
+        if (mainColor != another.mainColor) return Integer.compare(mainColor.getRGB(),another.mainColor.getRGB());
+        if (comColor != another.comColor) return Integer.compare(comColor.getRGB(),another.comColor.getRGB());
+        if (modernized!= another.modernized) return Boolean.compare(modernized,another.modernized);
+        if (guns != another.guns) return Boolean.compare(guns,another.guns);
+        if (gunColor != another.gunColor) return Integer.compare(gunColor.getRGB(),another.gunColor.getRGB());
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object another) {
+        if (another == null) {
+            return false;
+        }
+        if (!(another instanceof AirCraftImpl)) {
+            return false;
+        }
+        AirCraftImpl airCraftObf = (AirCraftImpl) another;
+        return equals(airCraftObf);
+    }
+
+    public boolean equals(AirCraftImpl another) {
+        if (another == null) return false;
+        if (maxSpeed != another.maxSpeed) return false;
+        if (weight != another.weight) return false;
+        if (mainColor != another.mainColor) return false;
+        if (comColor != another.comColor) return false;
+        if (modernized!= another.modernized) return false;
+        if (guns != another.guns) return false;
+        if (gunColor != another.gunColor) return false;
+        return true;
     }
 }

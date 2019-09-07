@@ -90,7 +90,7 @@ public class MultiLevelHangar {
         fw.write(text, 0, text.length());
     }
 
-    public void Sort(){
+    public void sort() {
         hangarStages.sort(null);
     }
 }

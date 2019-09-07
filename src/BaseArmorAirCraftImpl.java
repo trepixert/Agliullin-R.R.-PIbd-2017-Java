@@ -1,6 +1,7 @@
 import java.awt.*;
+import java.io.Serializable;
 
-public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
+public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft implements Serializable, Comparable<BaseArmorAirCraftImpl> {
     protected final int airCraftWidth = 100;
     protected final int airCraftHeight = 100;
 
@@ -58,6 +59,38 @@ public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
 
     @Override
     public String toString() {
-        return maxSpeed+";"+weight+";"+mainColor.getRGB();
+        return maxSpeed + ";" + weight + ";" + mainColor.getRGB();
+    }
+
+    @Override
+    public int compareTo(BaseArmorAirCraftImpl another) {
+        if (another == null) {
+            return 1;
+        }
+        if (maxSpeed != another.maxSpeed) {
+            return Integer.compare(maxSpeed, another.maxSpeed);
+        }
+        if (weight != another.weight) {
+            return Float.compare(weight, another.weight);
+        }
+        if (mainColor != another.mainColor) {
+            return Integer.compare(mainColor.getRGB(), another.mainColor.getRGB());
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object another) {
+        if (another == null) return false;
+        if (!(another instanceof BaseArmorAirCraftImpl)) return false;
+        BaseArmorAirCraftImpl airCraftObj = (BaseArmorAirCraftImpl) another;
+        return equals(airCraftObj);
+    }
+
+    public boolean equals(BaseArmorAirCraftImpl another) {
+        if (another == null) return false;
+        if (maxSpeed != another.maxSpeed) return false;
+        if (weight != another.weight) return false;
+        return mainColor == another.mainColor;
     }
 }

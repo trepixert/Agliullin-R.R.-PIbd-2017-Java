@@ -1,5 +1,5 @@
 public class HangarOverflowException extends Exception {
-    public HangarOverflowException(){
+    public HangarOverflowException() {
         super("На ангаре нет свободных мест");
     }
 }

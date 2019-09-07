@@ -13,7 +13,6 @@ public class FormHangar extends JPanel {
     private JButton setAirCraft = new JButton("Добавить самолет");
     private JLabel removeAirCraftLabel = new JLabel("Забрать самолёт: ");
     private JButton sortButton = new JButton("Сортировать");
-    private JLabel removeAirCraftLabel = new JLabel();
     private JTextField removeAirCraftField = new JTextField();
     private JButton removeAirCraft = new JButton("Забрать самолет");
     private JList<String> listLevels;
@@ -57,6 +56,7 @@ public class FormHangar extends JPanel {
         removedAirCraft.setBounds(710, 320, 300, 580);
         listLevels.setBounds(800, 70, 200, 100);
         menu.setBounds(5, 0, 1200, 20);
+        sortButton.setBounds(1010, 30, 190, 20);
 
         add(setAirCraft);
         add(removeAirCraftField);
@@ -64,10 +64,8 @@ public class FormHangar extends JPanel {
         add(removeAirCraft);
         add(removedAirCraft);
         add(listLevels);
-
-        sortButton.setBounds(1010,30,190,20);
         add(sortButton);
-        sortButton.addActionListener(handler);
+
         menu.add(createFileMenu());
         window.setJMenuBar(menu);
         menu.setVisible(true);
@@ -93,7 +91,6 @@ public class FormHangar extends JPanel {
                         removedAirCraft.setAirCraft(airCraft);
                         removedAirCraft.repaint();
                         logger.info("Изъят самолет " + airCraft.toString() + " с места " + removeAirCraftField.getText());
-                        ;
                     } catch (HangarNotFoundException ex) {
                         JOptionPane.showMessageDialog(null, "Не найдено!");
                         removedAirCraft.setAirCraft(null);
@@ -114,7 +111,7 @@ public class FormHangar extends JPanel {
                     logger.info("Добавлен самолет " + armorAirCraft.toString() + " на место " + place);
                     if (place != -1)
                         repaint();
-                } catch (HangarOverflowException ex) {
+                } catch (HangarOverflowException | HangarAlreadyHaveException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -152,10 +149,11 @@ public class FormHangar extends JPanel {
                 }
                 repaint();
             }
-            if(e.getSource()==sortButton){
-                hangar.Sort();
-                repaint();
-            }
+        });
+
+        sortButton.addActionListener(e -> {
+            hangar.sort();
+            repaint();
         });
         repaint();
     }

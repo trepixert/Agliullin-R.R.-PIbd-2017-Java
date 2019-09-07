@@ -1,5 +1,5 @@
 public class HangarAlreadyHaveException extends Exception {
-    public HangarAlreadyHaveException(){
+    public HangarAlreadyHaveException() {
         super("В ангаре уже есть такой самолет!");
     }
 }
