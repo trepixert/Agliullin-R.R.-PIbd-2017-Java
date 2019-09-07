@@ -3,8 +3,8 @@ import java.awt.*;
 public class AirCraftImpl extends BaseArmorAirCraftImpl {
     private Color comColor;
     private Color gunColor;
-    public boolean modernized;
-    public boolean guns;
+    private boolean modernized;
+    private boolean guns;
 
     public AirCraftImpl(int maxSpeed, float weight, Color mainColor, Color comColor, boolean modernized, boolean guns, Color gunColor) {
         super(maxSpeed, weight, mainColor);
@@ -47,7 +47,7 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
         float step = maxSpeed * 100 / weight;
         switch (direction) {
             case RIGHT:
-                if (startPosX + step < pictureWidth - AirCraftWidth)
+                if (startPosX + step < pictureWidth - airCraftWidth)
                     startPosX += step;
                 break;
             case LEFT:
@@ -59,7 +59,7 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
                     startPosY -= step;
                 break;
             case DOWN:
-                if (startPosY + step < pictureHeight - AirCraftHeight)
+                if (startPosY + step < pictureHeight - airCraftHeight)
                     startPosY += step;
                 break;
         }

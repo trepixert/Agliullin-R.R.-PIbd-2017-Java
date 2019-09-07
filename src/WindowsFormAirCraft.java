@@ -8,7 +8,7 @@ public class WindowsFormAirCraft extends JFrame {
     }
 
     private void setUp(JFrame window) {
-        window.setSize(900, 500);
+        window.setSize(1200, 1024);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.add(new FormHangar());

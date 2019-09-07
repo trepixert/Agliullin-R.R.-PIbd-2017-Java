@@ -1,8 +1,8 @@
 import java.awt.*;
 
 public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
-    protected final int AirCraftWidth = 100;
-    protected final int AirCraftHeight = 100;
+    protected final int airCraftWidth = 100;
+    protected final int airCraftHeight = 100;
 
     public BaseArmorAirCraftImpl(int MaxSpeed, float Weight, Color MainColor) {
         this.maxSpeed = MaxSpeed;
@@ -14,7 +14,7 @@ public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
         float step = maxSpeed * 100 / weight;
         switch (direction) {
             case RIGHT:
-                if (startPosX + step < pictureWidth - AirCraftWidth)
+                if (startPosX + step < pictureWidth - airCraftWidth)
                     startPosX += step;
                 break;
             case LEFT:
@@ -26,7 +26,7 @@ public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
                     startPosY -= step;
                 break;
             case DOWN:
-                if (startPosY + step < pictureHeight - AirCraftHeight)
+                if (startPosY + step < pictureHeight - airCraftHeight)
                     startPosY += step;
                 break;
         }
