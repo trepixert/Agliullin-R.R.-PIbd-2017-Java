@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.stream.IntStream;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.stream.IntStream;
 
 public class FormHangar extends JPanel {
     private ArmorAirCraft armorAirCraft;
@@ -40,7 +40,7 @@ public class FormHangar extends JPanel {
             logger.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         menu = new JMenuBar();
@@ -82,14 +82,19 @@ public class FormHangar extends JPanel {
         removeAirCraft.addActionListener(e -> {
             if (!removeAirCraftField.getText().equals("")) {
                 if (listLevels.getSelectedIndex() > -1) {
-                    ArmorAirCraft airCraft = hangar.getHangar(listLevels.getSelectedIndex()).removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
-                    if (airCraft != null) {
+                    try {
+                        ArmorAirCraft airCraft = hangar.getHangar(listLevels.getSelectedIndex()).removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
                         airCraft.setPosition(40, 40, removedAirCraft.getX(), removedAirCraft.getY());
                         removedAirCraft.setAirCraft(airCraft);
                         removedAirCraft.repaint();
-                    } else {
+                        logger.info("Изъят самолет " + airCraft.toString() + " с места " + removeAirCraftField.getText());
+                        ;
+                    } catch (HangarNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, "Не найдено!");
                         removedAirCraft.setAirCraft(null);
                         removedAirCraft.repaint();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Неизвестная ошибка");
                     }
                     repaint();
                 }
@@ -98,10 +103,15 @@ public class FormHangar extends JPanel {
         setAirCraft.addActionListener(e -> {
             formAirCraftConfig = new FormAirCraftConfig(new JFrame());
             if (formAirCraftConfig.isSuccess()) {
-                armorAirCraft = formAirCraftConfig.getAirCraft();
-                int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
-                if (place != -1)
-                    repaint();
+                try {
+                    armorAirCraft = formAirCraftConfig.getAirCraft();
+                    int place = hangar.getHangar(listLevels.getSelectedIndex()).addAirCraft(armorAirCraft);
+                    logger.info("Добавлен самолет " + armorAirCraft.toString() + " на место " + place);
+                    if (place != -1)
+                        repaint();
+                } catch (HangarOverflowException ex) {
+                    ex.printStackTrace();
+                }
             }
             repaint();
         });
@@ -111,22 +121,14 @@ public class FormHangar extends JPanel {
         save.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                JOptionPane.showMessageDialog(null,
-                        hangar.saveData(file.getPath()) ? "Сохранение прошло успешно!" : "Не сохранилось");
-                repaint();
-            if(e.getSource()==save){
-                JFileChooser fileChooser = new JFileChooser();
-                if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
-                    try {
-                        File file = fileChooser.getSelectedFile();
-                        hangar.saveData(file.getPath());
-                        JOptionPane.showMessageDialog(null, "Сохранение прошло успешно!");
-                        logger.info("Сохранено в файл "+file.getPath());
-                    }catch(Exception ex){
-                        JOptionPane.showMessageDialog(null, "Не сохранилось");
-                        ex.printStackTrace();
-                    }
+                try {
+                    File file = fileChooser.getSelectedFile();
+                    hangar.saveData(file.getPath());
+                    JOptionPane.showMessageDialog(null, "Сохранение прошло успешно!");
+                    logger.info("Сохранено в файл " + file.getPath());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Не сохранилось");
+                    ex.printStackTrace();
                 }
             }
         });
@@ -134,28 +136,18 @@ public class FormHangar extends JPanel {
         load.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                JOptionPane.showMessageDialog(null,
-                        hangar.loadData(file.getPath()) ? "Загрузка прошла успешно!" : "Не загрузилось");
-                repaint();
-            }
-        });
-            if(e.getSource()==load){
-                JFileChooser fileChooser = new JFileChooser();
-                if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
-                    try {
-                        File file = fileChooser.getSelectedFile();
-                        hangar.loadData(file.getPath());
-                        JOptionPane.showMessageDialog(null, "Загрузка прошла успешно!");
-                        logger.info("Загружено из файла "+ file.getPath());
-                    }catch(Exception ex){
-                        JOptionPane.showMessageDialog(null, "Не загрузилось");
-                        ex.printStackTrace();
-                    }
+                try {
+                    File file = fileChooser.getSelectedFile();
+                    hangar.loadData(file.getPath());
+                    JOptionPane.showMessageDialog(null, "Загрузка прошла успешно!");
+                    logger.info("Загружено из файла " + file.getPath());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Не загрузилось");
+                    ex.printStackTrace();
                 }
             }
-            repaint();
-        }
+        });
+        repaint();
     }
 
     @Override

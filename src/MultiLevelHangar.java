@@ -43,7 +43,7 @@ public class MultiLevelHangar {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | HangarNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -65,7 +65,7 @@ public class MultiLevelHangar {
                 hangarStages.clear();
             }
             hangarStages = new ArrayList<>(count);
-        }else throw new Exception("Неверный формат файла");
+        } else throw new Exception("Неверный формат файла");
         int counter = -1;
         ArmorAirCraft airCraft = null;
         for (int i = 1; i < strings.length; i++) {

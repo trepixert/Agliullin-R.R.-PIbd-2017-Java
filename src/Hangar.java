@@ -16,7 +16,7 @@ public class Hangar<T extends ArmorAirCraft> {
         this.pictureHeight = pictureHeight;
     }
 
-    public int addAirCraft(T airCraft) {
+    public int addAirCraft(T airCraft) throws HangarOverflowException {
         if (places.size() == this.size) {
             throw new HangarOverflowException();
         }
@@ -30,7 +30,7 @@ public class Hangar<T extends ArmorAirCraft> {
         return -1;
     }
 
-    public T removeAirCraft(int index) {
+    public T removeAirCraft(int index) throws HangarNotFoundException {
         if (places.containsKey(index)) {
             places.remove(index);
             return places.get(index);
@@ -53,13 +53,14 @@ public class Hangar<T extends ArmorAirCraft> {
         }
     }
 
-    public void setT(int index, T value) {
+    public void setT(int index, T value) throws HangarOccupiedPlaceException {
         if (!(places.containsKey(index))) {
             places.put(index, value);
             places.get(index).setPosition(5 + index / 10 * placeSizeWidth - 80, index % 5 * (placeSizeHeight + 145) + 60, pictureWidth, pictureHeight);
         } else throw new HangarOccupiedPlaceException(index);
+    }
 
-    public T getT(int index){
+    public T getT(int index) throws HangarNotFoundException {
         return places.getOrDefault(index, null);
     }
 }
