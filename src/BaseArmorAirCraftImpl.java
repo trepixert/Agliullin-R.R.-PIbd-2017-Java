@@ -1,36 +1,20 @@
 import java.awt.*;
 
-public class ArmorAirCraft {
-    private int startPosX;
-    private int startPosY;
-    private int pictureWidth;
-    private int pictureHeight;
-    private final int airCraftWidth = 100;
-    private final int airCraftHeight = 100;
-    private int maxSpeed;
-    private float weight;
-    private Color mainColor;
-    private Color comColor;
+public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
+    protected final int AirCraftWidth = 100;
+    protected final int AirCraftHeight = 100;
 
-    public ArmorAirCraft(int MaxSpeed, float Weight, Color MainColor, Color comColor) {
+    public BaseArmorAirCraftImpl(int MaxSpeed, float Weight, Color MainColor) {
         this.maxSpeed = MaxSpeed;
         this.weight = Weight;
         this.mainColor = MainColor;
-        this.comColor = comColor;
-    }
-
-    public void setPosition(int x, int y, int width, int height) {
-        startPosX = x;
-        startPosY = y;
-        pictureWidth = width;
-        pictureHeight = height;
     }
 
     public void moveAirCraft(Direction direction) {
         float step = maxSpeed * 100 / weight;
         switch (direction) {
             case RIGHT:
-                if (startPosX + step < pictureWidth - airCraftWidth)
+                if (startPosX + step < pictureWidth - AirCraftWidth)
                     startPosX += step;
                 break;
             case LEFT:
@@ -42,12 +26,13 @@ public class ArmorAirCraft {
                     startPosY -= step;
                 break;
             case DOWN:
-                if (startPosY + step < pictureHeight - airCraftHeight)
+                if (startPosY + step < pictureHeight - AirCraftHeight)
                     startPosY += step;
                 break;
         }
     }
 
+    @Override
     public void drawAirCraft(Graphics g) {
         g.setColor(mainColor);
         g.drawOval(startPosX + 80, startPosY + 50, 250, 50);

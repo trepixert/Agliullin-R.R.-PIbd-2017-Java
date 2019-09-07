@@ -3,11 +3,12 @@ import java.awt.*;
 
 public class AirCraftPanel extends JPanel {
     private JButton createButton = new JButton("Создать самолет");
+    private JButton createCoolButton = new JButton("Создать крутой самолет");
     private JButton toUp = new JButton("Вверх");
     private JButton toDown = new JButton("Вниз");
     private JButton toLeft = new JButton("Влево");
     private JButton toRight = new JButton("Вправо");
-    private ArmorAirCraft armorAirCraft;
+    private BaseArmorAirCraftImpl baseArmorAirCraftImpl;
 
     public AirCraftPanel() {
         setLayout(null);
@@ -18,21 +19,29 @@ public class AirCraftPanel extends JPanel {
 
     private void createEvent() {
         createButton.addActionListener(e -> {
-            armorAirCraft = new ArmorAirCraft((int) (Math.random() * 100) + 1, (int) (Math.random() * 5000) + 1000, Color.GRAY, Color.BLACK);
-            armorAirCraft.setPosition((int) (Math.random() * 100) + 1, (int) (Math.random() * 100) + 1, getWidth(), getHeight());
-            addAirCraft(armorAirCraft);
+            baseArmorAirCraftImpl = new BaseArmorAirCraftImpl((int) (Math.random() * 100) + 1, (int) (Math.random() * 5000) + 1000, Color.GRAY);
+            baseArmorAirCraftImpl.setPosition((int) (Math.random() * 100) + 1, (int) (Math.random() * 100) + 1, getWidth(), getHeight());
+            addAirCraft(baseArmorAirCraftImpl);
+            repaint();
+        });
+        createCoolButton.addActionListener(e -> {
+            baseArmorAirCraftImpl = new AirCraftImpl((int) (Math.random() * 501) + 100, (int) (Math.random() * 5000) + 1000, Color.GRAY, Color.RED, true, true, Color.BLACK);
+            baseArmorAirCraftImpl.setPosition((int) (Math.random() * 501) + 100, (int) (Math.random() * 201) + 100, getWidth(), getHeight());
+            addAirCraft(baseArmorAirCraftImpl);
             repaint();
         });
     }
 
     private void init() {
         createButton.setBounds(10, 10, 150, 20);
+        createCoolButton.setBounds(160, 10, 250, 20);
         toUp.setBounds(700, 400, 90, 20);
         toDown.setBounds(700, 430, 90, 20);
         toLeft.setBounds(600, 410, 90, 20);
         toRight.setBounds(800, 410, 90, 20);
 
         add(createButton);
+        add(createCoolButton);
         add(toUp);
         add(toDown);
         add(toLeft);
@@ -41,38 +50,38 @@ public class AirCraftPanel extends JPanel {
 
     private void initDrivingDirections() {
         toUp.addActionListener(e -> {
-            if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.UP);
+            if (baseArmorAirCraftImpl != null) {
+                baseArmorAirCraftImpl.moveAirCraft(Direction.UP);
                 repaint();
             }
         });
         toDown.addActionListener(e -> {
-            if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.DOWN);
+            if (baseArmorAirCraftImpl != null) {
+                baseArmorAirCraftImpl.moveAirCraft(Direction.DOWN);
                 repaint();
             }
         });
         toLeft.addActionListener(e -> {
-            if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.LEFT);
+            if (baseArmorAirCraftImpl != null) {
+                baseArmorAirCraftImpl.moveAirCraft(Direction.LEFT);
                 repaint();
             }
         });
         toRight.addActionListener(e -> {
-            if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.RIGHT);
+            if (baseArmorAirCraftImpl != null) {
+                baseArmorAirCraftImpl.moveAirCraft(Direction.RIGHT);
                 repaint();
             }
         });
     }
 
-    public void addAirCraft(ArmorAirCraft armorAirCraft) {
-        this.armorAirCraft = armorAirCraft;
+    public void addAirCraft(BaseArmorAirCraftImpl baseArmorAirCraftImpl) {
+        this.baseArmorAirCraftImpl = baseArmorAirCraftImpl;
     }
 
     public void paint(Graphics g) {
         super.paint(g);
-        if (armorAirCraft != null)
-            armorAirCraft.drawAirCraft(g);
+        if (baseArmorAirCraftImpl != null)
+            baseArmorAirCraftImpl.drawAirCraft(g);
     }
 }
