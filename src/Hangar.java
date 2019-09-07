@@ -1,39 +1,40 @@
 import java.awt.*;
+import java.util.stream.IntStream;
 import java.util.HashMap;
 
-public class Hangar<T extends IArmorAirCraft> {
-    private HashMap<Integer,T> _places;
-    private int maxCount;
+public class Hangar<T extends ArmorAirCraft> {
+    private final int size;
+    private HashMap<Integer,T> places;
     private int pictureWidth;
     private int pictureHeight;
-    private int _placeSizeWidth = 210;
-    private int _placeSizeHeight = 80;
+    private int placeSizeWidth = 210;
+    private int placeSizeHeight = 80;
 
-    public Hangar(int sizes, int pictureWidth, int pictureHeight){
-        maxCount = sizes;
-        _places = new HashMap<>();
+    public Hangar(int size, int pictureWidth, int pictureHeight){
+        maxCount = size;
+        places = new HashMap<>();
         this.pictureWidth = pictureWidth;
         this.pictureHeight = pictureHeight;
+        this.size = size;
     }
 
     public int addAirCraft (T airCraft){
-        if(_places.size()==maxCount)
+        if(places.size()==this.size)
             return -1;
         for(int i=0;i<maxCount;i++){
-            if(CheckFreePlace(i)){
-                _places.put(i, airCraft);
-                _places.get(i).SetPosition(5 + i / 10 * _placeSizeWidth - 80, i % 5 * (_placeSizeHeight + 145) + 40, pictureWidth, pictureHeight);
+            if(checkFreePlace(i)){
+                places.put(i, airCraft);
+                places.get(i).setPosition(5 + i / 10 * _placeSizeWidth - 80, i % 5 * (_placeSizeHeight + 145) + 40, pictureWidth, pictureHeight);
                 return i;
             }
         }
-        return -1;
     }
 
     public T removeAirCraft (int index){
-        if (!CheckFreePlace(index)) {
-            T AirCraft = _places.get(index);
-            _places.remove(index);
-            return AirCraft;
+        if (!checkFreePlace(index)) {
+            T airCraft = places.get(index);
+            places.remove(index);
+            return airCraft;
         }
         return null;
     }
@@ -48,13 +49,13 @@ public class Hangar<T extends IArmorAirCraft> {
             airCraft.DrawAirCraft(g);
     }
 
-    private void DrawMarking(Graphics2D g) {
+    private void drawMarking(Graphics2D g) {
         g.setColor(Color.BLACK);
-        g.drawRect( 0, 0, (maxCount / 5) * _placeSizeWidth+500, 1024);
-        for(int i = 0; i < maxCount / 5; i++) {
-            for (int j = 0; j < 4; ++j)
-                g.drawLine( i * _placeSizeWidth, j * (_placeSizeHeight+145), i * _placeSizeWidth + 160, j * (_placeSizeHeight+145));
-            g.drawLine( i * (_placeSizeWidth+53), 0, i * (_placeSizeWidth+53), 675);
+        g.drawRect(0, 0, 1200, 1024);
+        for (int i = 0; i < size / 3 + 1; i++) {
+            for (int j = 0; j < 3; ++j)
+                g.drawLine(i * placeSizeWidth, j * (placeSizeHeight + 145) + 20, i * placeSizeWidth + 160, j * (placeSizeHeight + 145) + 20);
+            g.drawLine(i * (placeSizeWidth + 53), 20, i * (placeSizeWidth + 53), 675);
         }
     }
 }

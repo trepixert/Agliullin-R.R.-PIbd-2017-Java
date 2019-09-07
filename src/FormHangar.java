@@ -2,11 +2,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class FormHangar extends JPanel {
-    private IArmorAirCraft armorAirCraft;
+    private Hangar<ArmorAirCraft> hangar;
+    private ArmorAirCraft armorAirCraft;
     private Board removedAirCraft = new Board();
     private JButton setToHangarBaseAirCraft = new JButton("Припарковать обычный");
     private JButton setToHangarCoolAirCraft = new JButton("Припарковать крутой ");
@@ -19,8 +18,57 @@ public class FormHangar extends JPanel {
     MultiLevelHangar hangar;
     private final int countLevel = 5;
 
-    public FormHangar(){
+    public FormHangar() {
         setLayout(null);
+        init();
+        eventsHandler();
+    }
+
+    private void eventsHandler() {
+        removeAirCraft.addActionListener(e -> {
+            if (!removeAirCraftField.getText().equals("")) {
+                ArmorAirCraft airCraft = hangar.removeAirCraft(Integer.parseInt(removeAirCraftField.getText()));
+                if (airCraft != null) {
+                    airCraft.setPosition(5, 50, removedAirCraft.getWidth(), removedAirCraft.getHeight());
+                    removedAirCraft.setAirCraft(airCraft);
+                    removedAirCraft.repaint();
+                    repaint();
+                } else {
+                    removedAirCraft.setAirCraft(null);
+                    removedAirCraft.repaint();
+                }
+            }
+        });
+
+        setToHangarBaseAirCraft.addActionListener(e -> {
+            armorAirCraft = new BaseArmorAirCraftImpl((int) (Math.random() * 100) + 1, (int) (Math.random() * 5000) + 1000, Color.GRAY);
+            hangar.addAirCraft(armorAirCraft);
+            repaint();
+        });
+
+        setToHangarCoolAirCraft.addActionListener(e -> {
+            armorAirCraft = new AirCraftImpl((int) (Math.random() * 501) + 100, (int) (Math.random() * 5000) + 1000, Color.GRAY, Color.RED, true, true, Color.BLACK);
+            hangar.addAirCraft(armorAirCraft);
+            repaint();
+        });
+    }
+
+    private void init() {
+        hangar = new Hangar<>(9, getWidth(), getHeight());
+
+        setToHangarBaseAirCraft.setBounds(800, 15, 200, 20);
+        setToHangarCoolAirCraft.setBounds(800, 40, 200, 20);
+        removeAirCraftField.setBounds(800, 100, 200, 40);
+        removeAirCraftLabel.setBounds(800, 70, 200, 20);
+        removeAirCraft.setBounds(800, 150, 200, 20);
+        removedAirCraft.setBounds(710, 180, 1100, 580);
+
+        removeAirCraftLabel.setText("Забрать машину: ");
+
+        add(setToHangarBaseAirCraft);
+        add(setToHangarCoolAirCraft);
+        add(removeAirCraftField);
+        add(removeAirCraftLabel);
         eHandler handler = new eHandler();
         hangar = new MultiLevelHangar(countLevel,getWidth(),getHeight());
         listLevels = new JList();
@@ -50,15 +98,14 @@ public class FormHangar extends JPanel {
         add(removeAirCraftField);
         removeAirCraft.setBounds(800,250,200,20);
         add(removeAirCraft);
-        removeAirCraft.addActionListener(handler);
-        removedAirCraft.setLocation(710,280);
-        removedAirCraft.setSize(400,400);
         add(removedAirCraft);
     }
 
     @Override
     public void paint(Graphics g){
         super.paint(g);
+        if (hangar != null) {
+            hangar.draw((Graphics2D) g);
         int selectedLevel = listLevels.getSelectedIndex();
         if(selectedLevel!=-1)
             if(hangar!=null) hangar.getHangar(selectedLevel).Draw((Graphics2D) g);
