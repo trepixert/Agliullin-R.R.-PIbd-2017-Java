@@ -29,19 +29,19 @@ public class ArmorAirCraft {
     public void moveAirCraft(Direction direction) {
         float step = maxSpeed * 100 / weight;
         switch (direction) {
-            case Right:
+            case RIGHT:
                 if (startPosX + step < pictureWidth - airCraftWidth)
                     startPosX += step;
                 break;
-            case Left:
+            case LEFT:
                 if (startPosX - step > 0)
                     startPosX -= step;
                 break;
-            case Up:
+            case UP:
                 if (startPosY - step > 0)
                     startPosY -= step;
                 break;
-            case Down:
+            case DOWN:
                 if (startPosY + step < pictureHeight - airCraftHeight)
                     startPosY += step;
                 break;

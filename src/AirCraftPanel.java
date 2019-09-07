@@ -42,25 +42,25 @@ public class AirCraftPanel extends JPanel {
     private void initDrivingDirections() {
         toUp.addActionListener(e -> {
             if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.Up);
+                armorAirCraft.moveAirCraft(Direction.UP);
                 repaint();
             }
         });
         toDown.addActionListener(e -> {
             if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.Down);
+                armorAirCraft.moveAirCraft(Direction.DOWN);
                 repaint();
             }
         });
         toLeft.addActionListener(e -> {
             if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.Left);
+                armorAirCraft.moveAirCraft(Direction.LEFT);
                 repaint();
             }
         });
         toRight.addActionListener(e -> {
             if (armorAirCraft != null) {
-                armorAirCraft.moveAirCraft(Direction.Right);
+                armorAirCraft.moveAirCraft(Direction.RIGHT);
                 repaint();
             }
         });
