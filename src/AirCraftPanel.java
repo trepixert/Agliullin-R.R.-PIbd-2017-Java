@@ -11,8 +11,8 @@ public class AirCraftPanel extends JPanel {
 
     public AirCraftPanel() {
         setLayout(null);
-        createEvent();
         init();
+        createEvent();
         initDrivingDirections();
     }
 
