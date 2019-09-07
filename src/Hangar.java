@@ -54,14 +54,13 @@ public class Hangar<T extends ArmorAirCraft> {
     }
 
     public void setT(int index, T value) {
-        if (CheckFreePlace(index)) {
-            _places.put(index, value);
-            _places.get(index).SetPosition(5 + index / 10 * _placeSizeWidth - 80, index % 5 * (_placeSizeHeight + 145) + 60, pictureWidth, pictureHeight);
+        if (!(places.containsKey(index))) {
+            places.put(index, value);
+            places.get(index).setPosition(5 + index / 10 * placeSizeWidth - 80, index % 5 * (placeSizeHeight + 145) + 60, pictureWidth, pictureHeight);
         }
     }
 
     public T getT(int index){
-        if(_places.containsKey(index))  return _places.get(index);
-        return null;
+        return places.getOrDefault(index, null);
     }
 }

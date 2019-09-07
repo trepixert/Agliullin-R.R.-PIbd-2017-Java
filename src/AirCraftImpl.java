@@ -5,6 +5,7 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
     private Color gunColor;
     private boolean modernized;
     private boolean guns;
+    private int countLines;
 
     public AirCraftImpl(int maxSpeed, float weight, Color mainColor, Color comColor, boolean modernized, boolean guns, Color gunColor) {
         super(maxSpeed, weight, mainColor);
@@ -12,6 +13,19 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
         this.gunColor = gunColor;
         this.modernized = modernized;
         this.guns = guns;
+    }
+
+    public AirCraftImpl(String info){
+        super(info);
+        String[] strings = info.split(";");
+        this.maxSpeed = Integer.parseInt(strings[0]);
+        this.weight = Float.parseFloat(strings[1]);
+        this.mainColor = new Color(Integer.parseInt(strings[2]));
+        this.comColor = new Color(Integer.parseInt(strings[3]));
+        modernized = Boolean.parseBoolean(strings[4]);
+        guns = Boolean.parseBoolean(strings[5]);
+        this.gunColor = new Color(Integer.parseInt(strings[6]));
+        this.countLines = Integer.parseInt(strings[7]);
     }
 
     @Override
@@ -67,5 +81,10 @@ public class AirCraftImpl extends BaseArmorAirCraftImpl {
 
     public void setComColor(Color comColor) {
         this.comColor = comColor;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+";"+comColor.getRGB()+";"+modernized+";"+guns+";"+gunColor.getRGB()+";"+countLines;
     }
 }

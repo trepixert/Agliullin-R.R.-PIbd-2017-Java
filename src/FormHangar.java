@@ -1,18 +1,13 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.util.stream.IntStream;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.stream.IntStream;
 
 public class FormHangar extends JPanel {
     private ArmorAirCraft armorAirCraft;
     private Board removedAirCraft = new Board();
     private JButton setAirCraft = new JButton("Добавить самолет");
-    private JLabel removeAirCraftLabel = new JLabel();
+    private JLabel removeAirCraftLabel = new JLabel("Забрать самолёт: ");
     private JTextField removeAirCraftField = new JTextField();
     private JButton removeAirCraft = new JButton("Забрать самолет");
     private JList<String> listLevels;
@@ -24,24 +19,19 @@ public class FormHangar extends JPanel {
     private JMenuItem save;
     private JMenuItem load;
 
-    public FormHangar(JFrame window){
+    public FormHangar(JFrame window) {
         setLayout(null);
-        init();
+        init(window);
         eventsHandler();
     }
 
-    private void init() {
+    private void init(JFrame window) {
         hangar = new MultiLevelHangar(countLevel, getWidth(), getHeight());
         listLevels = new JList<>();
         model = new DefaultListModel<>();
-        IntStream.range(0, countLevel).forEach(i -> model.addElement("Уровень: " + i));
-        eHandler handler = new eHandler();
         menu = new JMenuBar();
-        hangar = new MultiLevelHangar(countLevel,getWidth(),getHeight());
-        listLevels = new JList();
-        model = new DefaultListModel();
-        for(int i=0;i<countLevel;i++)
-            model.addElement("Уровень: "+i);
+        hangar = new MultiLevelHangar(countLevel, getWidth(), getHeight());
+        IntStream.range(0, countLevel).forEach(i -> model.addElement("Уровень: " + i));
         listLevels.setModel(model);
         listLevels.setSelectedIndex(0);
 
@@ -51,8 +41,7 @@ public class FormHangar extends JPanel {
         removeAirCraft.setBounds(800, 250, 200, 20);
         removedAirCraft.setBounds(710, 320, 300, 580);
         listLevels.setBounds(800, 70, 200, 100);
-
-        removeAirCraftLabel.setText("Забрать самолёт: ");
+        menu.setBounds(5, 0, 1200, 20);
 
         add(setAirCraft);
         add(removeAirCraftField);
@@ -60,35 +49,20 @@ public class FormHangar extends JPanel {
         add(removeAirCraft);
         add(removedAirCraft);
         add(listLevels);
+
         menu.add(createFileMenu());
         window.setJMenuBar(menu);
-        menu.setBounds(5,0,1200,20);
         menu.setVisible(true);
     }
 
-    public JMenu createFileMenu(){
-        eHandler handler = new eHandler();
+    public JMenu createFileMenu() {
         JMenu file = new JMenu("Файл");
         save = new JMenuItem("Сохранить");
         load = new JMenuItem("Загрузить");
         file.add(save);
         file.addSeparator();
         file.add(load);
-        save.addActionListener(handler);
-        load.addActionListener(handler);
         return file;
-    }
-
-    @Override
-    public void paint(Graphics g){
-        super.paint(g);
-        int selectedLevel = listLevels.getSelectedIndex();
-        if(selectedLevel!=-1)
-            if(hangar!=null) hangar.getHangar(selectedLevel).Draw((Graphics2D) g);
-    }
-
-    public void setListLevels(JList levels){
-        listLevels = levels;
     }
 
     private void eventsHandler() {
@@ -120,37 +94,34 @@ public class FormHangar extends JPanel {
         });
 
         listLevels.addListSelectionListener(e -> repaint());
+
+        save.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                JOptionPane.showMessageDialog(null,
+                        hangar.saveData(file.getPath()) ? "Сохранение прошло успешно!" : "Не сохранилось");
+                repaint();
+            }
+        });
+
+        load.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                JOptionPane.showMessageDialog(null,
+                        hangar.loadData(file.getPath()) ? "Загрузка прошла успешно!" : "Не загрузилось");
+                repaint();
+            }
+        });
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         int selectedLevel = listLevels.getSelectedIndex();
-        if (selectedLevel != -1) {
-            if (hangar != null) {
-                hangar.getHangar(selectedLevel).draw((Graphics2D) g);
-            }
-            if(e.getSource()==save){
-                JFileChooser fileChooser = new JFileChooser();
-                if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
-                    File file = fileChooser.getSelectedFile();
-                    if(hangar.saveData(file.getPath()))
-                        JOptionPane.showMessageDialog(null,"Сохранение прошло успешно!");
-                    else
-                        JOptionPane.showMessageDialog(null,"Не сохранилось");
-                }
-            }
-            if(e.getSource()==load){
-                JFileChooser fileChooser = new JFileChooser();
-                if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
-                    File file = fileChooser.getSelectedFile();
-                    if(hangar.loadData(file.getPath()))
-                        JOptionPane.showMessageDialog(null,"Загрузка прошла успешно!");
-                    else
-                        JOptionPane.showMessageDialog(null,"Не загрузилось");
-                }
-            }
-            repaint();
+        if (selectedLevel != -1 && hangar != null) {
+            hangar.getHangar(selectedLevel).draw((Graphics2D) g);
         }
     }
 

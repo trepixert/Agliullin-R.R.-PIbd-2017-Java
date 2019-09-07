@@ -3,8 +3,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class MultiLevelHangar {
     private List<Hangar<ArmorAirCraft>> hangarStages;
@@ -14,6 +14,8 @@ public class MultiLevelHangar {
 
     public MultiLevelHangar(int countStages, int pictureWidth, int pictureHeight) {
         hangarStages = new ArrayList<>();
+        this.pictureWidth = pictureWidth;
+        this.pictureHeight = pictureHeight;
         IntStream.range(0, countStages).forEach(i -> hangarStages.add(new Hangar<>(countPlaces, pictureWidth, pictureHeight)));
     }
 
@@ -21,70 +23,74 @@ public class MultiLevelHangar {
         return index > -1 && index < hangarStages.size() ? hangarStages.get(index) : null;
     }
 
-    public boolean saveData(String path){
+    public boolean saveData(String path) {
         File file = new File(path);
-        if(file.exists())
+        if (file.exists())
             file.delete();
-        try(FileWriter fw = new FileWriter(path,file.canWrite())){
-            writeToFile("CountLevels:"+hangarStages.size()+System.lineSeparator(),fw);
-            for (var level:hangarStages) {
-                writeToFile("Level"+System.lineSeparator(),fw);
-                for(int i=0;i<countPlaces;i++){
-                    var airCraft = level.getT(i);
-                    if(airCraft!=null){
-                        if(airCraft.getClass().getTypeName().equals("BaseArmorAirCraft"))
-                            writeToFile(i+":BaseArmorAirCraft:",fw);
-                        if(airCraft.getClass().getTypeName().equals("AirCraft"))
-                            writeToFile(i+":AirCraft:",fw);
-                        writeToFile(airCraft+System.lineSeparator(),fw);
+        try (FileWriter fw = new FileWriter(path, file.canWrite())) {
+            writeToFile("CountLevels:" + hangarStages.size() + System.lineSeparator(), fw);
+            for (var level : hangarStages) {
+                writeToFile("Level" + System.lineSeparator(), fw);
+                for (int i = 0; i < countPlaces; i++) {
+                    ArmorAirCraft airCraft = level.getT(i);
+                    if (airCraft != null) {
+                        if (airCraft.getClass().getTypeName().equals("BaseArmorAirCraftImpl"))
+                            writeToFile(i + ":BaseArmorAirCraftImpl:", fw);
+                        if (airCraft.getClass().getTypeName().equals("AirCraftImpl"))
+                            writeToFile(i + ":AirCraftImpl:", fw);
+                        writeToFile(airCraft + System.lineSeparator(), fw);
                     }
                 }
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
     }
 
-    public boolean loadData(String path){
+    public boolean loadData(String path) {
         File file = new File(path);
-        String textFromFile = "";
-        if(!file.exists())  return false;
-        try(Scanner scanner = new Scanner(file)){
+        StringBuilder textFromFile = new StringBuilder();
+        if (!file.exists()) return false;
+        try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine())
-                textFromFile += scanner.nextLine()+"\n";
-        }catch(Exception e){
+                textFromFile.append(scanner.nextLine()).append("\n");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        var strs = textFromFile.split("\n");
-        if(strs[0].contains("CountLevels")){
-            int count = Integer.parseInt(strs[0].split(":")[1]);
-            if(hangarStages!=null) hangarStages.clear();
+        String[] strings = textFromFile.toString().split("\n");
+        if (strings[0].contains("CountLevels")) {
+            int count = Integer.parseInt(strings[0].split(":")[1]);
+            if (hangarStages != null) {
+                hangarStages.clear();
+            }
             hangarStages = new ArrayList<>(count);
-        }else return false;
+        } else {
+            return false;
+        }
         int counter = -1;
-        IArmorAirCraft airCraft = null;
-        for(int i=1;i<strs.length;i++){
-            if(strs[i].equals("Level")){
+        ArmorAirCraft airCraft = null;
+        for (int i = 1; i < strings.length; i++) {
+            if (strings[i].equals("Level")) {
                 counter++;
-                hangarStages.add(new Hangar<>(countPlaces,pictureWidth,pictureHeight));
+                hangarStages.add(new Hangar<>(countPlaces, pictureWidth, pictureHeight));
                 continue;
             }
-            if(isNullOrEmpty(strs[i]))  continue;
-            if(strs[i].split(":")[1].equals("BaseArmorAirCraft"))
-                airCraft = new BaseArmorAirCraft(strs[i].split(":")[2]);
-            else if(strs[i].split(":")[1].equals("AirCraft"))
-                airCraft = new AirCraft(strs[i].split(":")[2]);
-            hangarStages.get(counter).setT(Integer.parseInt(strs[i].split(":")[0]),airCraft);
+            if (strings[i] == null || strings[i].trim().length() == 0) {
+                continue;
+            }
+            if (strings[i].split(":")[1].equals("BaseArmorAirCraftImpl")) {
+                airCraft = new BaseArmorAirCraftImpl(strings[i].split(":")[2]);
+            } else if (strings[i].split(":")[1].equals("AirCraftImpl")) {
+                airCraft = new AirCraftImpl(strings[i].split(":")[2]);
+            }
+            hangarStages.get(counter).setT(Integer.parseInt(strings[i].split(":")[0]), airCraft);
         }
         return true;
     }
 
-    private void writeToFile(String text, FileWriter fw)throws IOException{
-        fw.write(text,0,text.length());
+    private void writeToFile(String text, FileWriter fw) throws IOException {
+        fw.write(text, 0, text.length());
     }
 
-    private boolean isNullOrEmpty(String text){
-        return text==null || text.trim().length()==0;
-    }
 }

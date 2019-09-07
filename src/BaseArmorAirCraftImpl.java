@@ -10,6 +10,15 @@ public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
         this.mainColor = MainColor;
     }
 
+    public BaseArmorAirCraftImpl(String info) {
+        String[] strings = info.split(";");
+        if (strings.length == 3) {
+            this.maxSpeed = Integer.parseInt(strings[0]);
+            this.weight = Float.parseFloat(strings[1]);
+            this.mainColor = new Color(Integer.parseInt(strings[2]));
+        }
+    }
+
     public void moveAirCraft(Direction direction) {
         float step = maxSpeed * 100 / weight;
         switch (direction) {
@@ -45,5 +54,10 @@ public class BaseArmorAirCraftImpl extends AbstractArmorAirCraft {
 
     public void setMainColor(Color color) {
         this.mainColor = color;
+    }
+
+    @Override
+    public String toString() {
+        return maxSpeed+";"+weight+";"+mainColor.getRGB();
     }
 }
